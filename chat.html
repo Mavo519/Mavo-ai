@@ -59,6 +59,7 @@ cursor:pointer;
 margin:10px 0;
 }
 </style>
+
 </head>
 
 <body>
@@ -68,7 +69,7 @@ margin:10px 0;
 <h1>Mavo AI Chat</h1>
 
 <div id="chat">
-<div class="message"><b>Mavo AI:</b> Welcome! AI integration is coming soon.</div>
+<div class="message"><b>Mavo AI:</b> Welcome! Ask me anything.</div>
 </div>
 
 <input id="message" placeholder="Ask Mavo AI anything...">
@@ -76,36 +77,49 @@ margin:10px 0;
 
 </div>
 
+
 <script>
-function sendMessage(){
-const input=document.getElementById("message");
-const chat=document.getElementById("chat");
+async function sendMessage(){
 
-if(input.value.trim()=="") return;
+const input = document.getElementById("message");
+const chat = document.getElementById("chat");
 
-chat.innerHTML += "<div class='message'><b>You:</b> "+input.value+"</div>";
-chat.innerHTML += "<div class='message'><b>Mavo AI:</b> I'm still under development, but soon I'll answer your questions with real AI.</div>";
+let question = input.value;
+
+if(question.trim()=="") return;
+
+chat.innerHTML += "<div class='message'><b>You:</b> "+question+"</div>";
 
 input.value="";
-chat.scrollTop=chat.scrollHeight;
+
+chat.innerHTML += "<div class='message'><b>Mavo AI:</b> Thinking...</div>";
+
+try {
+
+let response = await fetch("/api/chat", {
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+message:question
+})
+});
+
+let data = await response.json();
+
+chat.innerHTML += "<div class='message'><b>Mavo AI:</b> "+data.reply+"</div>";
+
+} catch(error){
+
+chat.innerHTML += "<div class='message'><b>Mavo AI:</b> Sorry, something went wrong.</div>";
+
+}
+
+chat.scrollTop = chat.scrollHeight;
+
 }
 </script>
-<div class="chat-box">
-  <h2>Mavo AI</h2>
-  <p>Your personal AI assistant</p>
 
-  <input type="text" placeholder="Ask Mavo anything..." id="userInput">
-  <button onclick="sendMessage()">Send</button>
-
-  <p id="response"></p>
-</div>
-
-<script>
-function sendMessage() {
-  let question = document.getElementById("userInput").value;
-  document.getElementById("response").innerHTML =
-  "Mavo AI: I received your message - " + question;
-}
-</script>
 </body>
 </html>
