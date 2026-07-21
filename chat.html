@@ -90,6 +90,22 @@ input.value="";
 chat.scrollTop=chat.scrollHeight;
 }
 </script>
+<div class="chat-box">
+  <h2>Mavo AI</h2>
+  <p>Your personal AI assistant</p>
 
+  <input type="text" placeholder="Ask Mavo anything..." id="userInput">
+  <button onclick="sendMessage()">Send</button>
+
+  <p id="response"></p>
+</div>
+
+<script>
+function sendMessage() {
+  let question = document.getElementById("userInput").value;
+  document.getElementById("response").innerHTML =
+  "Mavo AI: I received your message - " + question;
+}
+</script>
 </body>
 </html>
