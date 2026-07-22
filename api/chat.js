@@ -7,31 +7,39 @@ export default async function handler(req, res) {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           contents: [
             {
               parts: [
                 {
-                  text: `You are Mavo AI, a helpful personal AI assistant.\n\nUser: ${message}`
-                }
-              ]
-            }
-          ]
-        })
+                  text: `You are Mavo AI, a helpful personal AI assistant.\n\nUser: ${message}`,
+                },
+              ],
+            },
+          ],
+        }),
       }
     );
 
     const data = await response.json();
 
-    res.status(200).json({
-      reply: data.candidates[0].content.parts[0].text
-    });
+    if (!response.ok) {
+      console.error(data);
+      return res.status(500).json({
+        reply: JSON.stringify(data),
+      });
+    }
 
+    res.status(200).json({
+      reply: data.candidates[0].content.parts[0].text,
+    });
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
-      reply: "Sorry, I had a problem connecting."
+      reply: error.message,
     });
   }
-}
+        }
