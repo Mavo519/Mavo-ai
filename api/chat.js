@@ -1,6 +1,13 @@
 export default async function handler(req, res) {
   const { message } = req.body;
 
+  // Check if the API key exists
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).json({
+      reply: "OPENAI_API_KEY is missing in Vercel",
+    });
+  }
+
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
