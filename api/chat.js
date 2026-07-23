@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             {
               parts: [
                 {
-                  text: `You are Mavo AI, a helpful, friendly, and intelligent personal AI assistant. Always give clear, useful, and conversational answers.\n\nUser: ${message}`,
+                  text: `You are Mavo AI, a helpful, friendly, and intelligent personal AI assistant. Always answer clearly and naturally.\n\nUser: ${message}`,
                 },
               ],
             },
@@ -38,15 +38,19 @@ export default async function handler(req, res) {
       });
     }
 
-    res.status(200).json({
-      reply: data.candidates[0].content.parts[0].text,
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Sorry, I couldn't generate a response.";
+
+    return res.status(200).json({
+      reply,
     });
 
   } catch (error) {
     console.error(error);
 
-    res.status(500).json({
-      reply: error.message,
+    return res.status(500).json({
+      reply: error.message || "An unexpected error occurred.",
     });
   }
-}
+        }
