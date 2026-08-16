@@ -1,125 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mavo AI Chat</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mavo AI</title>
 
-<style>
-body{
-font-family:Arial,sans-serif;
-background:#0b1020;
-color:white;
-margin:0;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-.container{
-width:90%;
-max-width:700px;
-background:#16213e;
-padding:20px;
-border-radius:15px;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: white;
+      min-height: 100vh;
+    }
 
-h1{
-color:#00d4ff;
-text-align:center;
-}
+    .container {
+      width: 95%;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px 0;
+    }
 
-#chat{
-height:350px;
-overflow-y:auto;
-background:#0f172a;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
-}
+    header {
+      text-align: center;
+      padding: 15px 0 20px;
+    }
 
-input{
-width:75%;
-padding:12px;
-border:none;
-border-radius:8px;
-}
+    h1 {
+      margin: 0;
+      color: #00d4ff;
+      font-size: 32px;
+    }
 
-button{
-padding:12px 20px;
-background:#00d4ff;
-border:none;
-border-radius:8px;
-font-weight:bold;
-cursor:pointer;
-}
+    .subtitle {
+      color: #9ca3af;
+      margin-top: 8px;
+    }
 
-.message{
-margin:10px 0;
-}
-</style>
+    .modes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
 
+    .mode {
+      padding: 12px 8px;
+      border: 1px solid #29344d;
+      background: #141c30;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .mode:hover {
+      background: #1d2942;
+    }
+
+    .mode.active {
+      background: #00a8cc;
+      border-color: #00d4ff;
+    }
+
+    .current-mode {
+      text-align: center;
+      margin: 10px 0;
+      color: #00d4ff;
+      font-weight: bold;
+    }
+
+    #chat {
+      height: 430px;
+      overflow-y: auto;
+      background: #111827;
+      border: 1px solid #26324a;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 10px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .user {
+      background: #1d4ed8;
+      margin-left: 10%;
+    }
+
+    .ai {
+      background: #1f2937;
+      margin-right: 10%;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    #message {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      color: #111;
+      font-size: 16px;
+      outline: none;
+    }
+
+    #sendButton {
+      padding: 14px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #00b8d9;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #sendButton:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .typing {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      .modes {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .input-area {
+        flex-direction: column;
+      }
+
+      #sendButton {
+        width: 100%;
+      }
+
+      .user {
+        margin-left: 3%;
+      }
+
+      .ai {
+        margin-right: 3%;
+      }
+
+      #chat {
+        height: 400px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-<h1>Mavo AI Chat</h1>
+    <header>
+      <h1>⚡ Mavo AI</h1>
+      <div class="subtitle">Your AI workspace</div>
+    </header>
 
-<div id="chat">
-<div class="message"><b>Mavo AI:</b> Welcome! Ask me anything.</div>
-</div>
+    <div class="modes">
 
-<input id="message" placeholder="Ask Mavo AI anything...">
-<button onclick="sendMessage()">Send</button>
+      <button class="mode active" data-mode="assistant">
+        🤖 Assistant
+      </button>
 
-</div>
+      <button class="mode" data-mode="code">
+        💻 Code
+      </button>
 
+      <button class="mode" data-mode="write">
+        ✍️ Write
+      </button>
 
-<script>
-async function sendMessage(){
+      <button class="mode" data-mode="study">
+        📚 Study
+      </button>
 
-const input = document.getElementById("message");
-const chat = document.getElementById("chat");
+      <button class="mode" data-mode="ideas">
+        💡 Ideas
+      </button>
 
-let question = input.value;
+      <button class="mode" data-mode="forex">
+        📈 Forex
+      </button>
 
-if(question.trim()=="") return;
+    </div>
 
-chat.innerHTML += "<div class='message'><b>You:</b> "+question+"</div>";
+    <div class="current-mode">
+      Mode: <span id="modeName">Mavo Assistant</span>
+    </div>
 
-input.value="";
+    <div id="chat">
 
-chat.innerHTML += "<div class='message'><b>Mavo AI:</b> Thinking...</div>";
+      <div class="message ai">
+        <b>Mavo AI:</b> Welcome! Choose a mode above and ask me anything.
+      </div>
 
-try {
+    </div>
 
-let response = await fetch("/api/chat", {
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-message:question
-})
-});
+    <div class="input-area">
 
-let data = await response.json();
+      <input
+        id="message"
+        type="text"
+        placeholder="Ask Mavo AI anything..."
+        autocomplete="off"
+      >
 
-chat.innerHTML += "<div class='message'><b>Mavo AI:</b> "+data.reply+"</div>";
+      <button id="sendButton">
+        Send
+      </button>
 
-} catch(error){
+    </div>
 
-chat.innerHTML += "<div class='message'><b>Mavo AI:</b> Sorry, something went wrong.</div>";
+  </div>
 
-}
+  <script>
 
-chat.scrollTop = chat.scrollHeight;
+    let currentMode = "assistant";
 
-}
-</script>
+    const modeNames = {
+      assistant: "Mavo Assistant",
+      code: "Mavo Code",
+      write: "Mavo Write",
+      study: "Mavo Study",
+      ideas: "Mavo Ideas",
+      forex: "Mavo Forex"
+    };
+
+    const modeButtons = document.querySelectorAll(".mode");
+    const modeName = document.getElementById("modeName");
+    const messageInput = document.getElementById("message");
+    const sendButton = document.getElementById("sendButton");
+    const chat = document.getElementById("chat");
+
+    modeButtons.forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        modeButtons.forEach(btn => {
+          btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        currentMode = button.dataset.mode;
+
+        modeName.textContent = modeNames[currentMode];
+
+        messageInput.placeholder =
+          currentMode === "forex"
+            ? "Ask Mavo Forex about a market setup..."
+            : `Ask ${modeNames[currentMode]}...`;
+
+      });
+
+    });
+
+    function addMessage(text, type) {
+
+      const message = document.createElement("div");
+
+      message.className = `message ${type}`;
+
+      message.textContent = text;
+
+      chat.appendChild(message);
+
+      chat.scrollTop = chat.scrollHeight;
+
+      return message;
+    }
+
+    async function sendMessage() {
+
+      const message = messageInput.value.trim();
+
+      if (!message) {
+        return;
+      }
+
+      addMessage(`You: ${message}`, "user");
+
+      messageInput.value = "";
+
+      sendButton.disabled = true;
+
+      const typingMessage =
+        addMessage("Mavo AI is thinking...", "ai");
+
+      typingMessage.classList.add("typing");
+
+      try {
+
+        const response = await fetch("/api/chat", {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            message: message,
+            mode: currentMode
+          })
+
+        });
+
+        const data = await response.json();
+
+        typingMessage.remove();
+
+        if (!response.ok) {
+
+          addMessage(
+            "Mavo AI error: " +
+            (data.error || "Something went wrong."),
+            "ai"
+          );
+
+          return;
+        }
+
+        addMessage(
+          `Mavo AI: ${data.reply}`,
+          "ai"
+        );
+
+      } catch (error) {
+
+        typingMessage.remove();
+
+        addMessage(
+          "Connection error. Please try again.",
+          "ai"
+        );
+
+        console.error(error);
+
+      } finally {
+
+        sendButton.disabled = false;
+
+        messageInput.focus();
+
+      }
+
+    }
+
+    sendButton.addEventListener(
+      "click",
+      sendMessage
+    );
+
+    messageInput.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
