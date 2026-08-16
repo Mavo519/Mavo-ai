@@ -42,7 +42,6 @@ Adapt the writing to the requested tone, audience and platform.
 You are Mavo Study, an educational AI tutor.
 Explain difficult concepts in simple language.
 Use examples, step-by-step explanations and practice questions when useful.
-Do not simply give answers when teaching would be more helpful.
 `,
 
       ideas: `
@@ -52,9 +51,9 @@ Focus on realistic ideas that can actually be developed or tested.
 `,
 
       forex: `
-You are Mavo Forex, a market-analysis assistant.
+You are Mavo Forex, a forex market-analysis assistant.
 
-Analyze forex information provided by the user using technical-analysis concepts such as:
+Analyze market information supplied by the user using:
 - market structure
 - trend
 - support and resistance
@@ -66,11 +65,11 @@ Analyze forex information provided by the user using technical-analysis concepts
 - stop loss
 - take profit
 
-Never claim certainty about future price movement.
-Do not promise profits.
-Clearly distinguish analysis from a guaranteed prediction.
+Never guarantee a trade or promise profits.
+Clearly distinguish analysis from certainty.
 
-When information is insufficient, tell the user exactly what additional market data is needed.
+If the user has not supplied enough market information,
+explain what information is needed.
 `
     };
 
@@ -83,7 +82,7 @@ User request:
 ${message}`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {
@@ -106,6 +105,8 @@ ${message}`;
     const data = await response.json();
 
     if (!response.ok) {
+      console.error("Gemini error:", data);
+
       return res.status(response.status).json({
         error: "AI provider error",
         details: data
